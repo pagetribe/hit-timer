@@ -15,6 +15,7 @@
   };
 
   const STORAGE_KEY_CUSTOM_PRESETS = 'hit_timer_custom_presets_v1';
+  const STORAGE_KEY_LAST_PRESET = 'hit_timer_last_preset_v1';
   const STORAGE_KEY_THEME = 'hit_timer_selected_theme_v1';
 
   // --- App State ---
@@ -396,16 +397,68 @@
   }
 
   // --- Presets Manager ---
-  function loadPreset(presetConfig) {
+  function applyPreset(presetConfig) {
     elements.prepInput.value = Math.min(60, Math.max(0, presetConfig.prep || 0));
     elements.workInput.value = Math.min(60, Math.max(1, presetConfig.work || 30));
     elements.restInput.value = Math.min(60, Math.max(0, presetConfig.rest || 0));
     elements.repsInput.value = Math.max(1, presetConfig.reps || 1);
     elements.setsInput.value = Math.max(1, presetConfig.sets || 1);
     elements.setRestInput.value = Math.min(60, Math.max(0, presetConfig.setRest || 0));
+  }
+
+  function loadPreset(presetConfig) {
+    applyPreset(presetConfig);
+    localStorage.setItem(STORAGE_KEY_LAST_PRESET, JSON.stringify(presetConfig));
 
     resetWorkout();
     updateTotalSummary();
+  }
+
+  function activatePresetChip(chipElement) {
+    // Deactivate all preset chips
+    document.querySelectorAll('#built-in-presets .preset-chip, #custom-presets-list .custom-chip').forEach(c => {
+        c.classList.remove('active');
+    });
+    // Activate the provided chip
+    if (chipElement) {
+        chipElement.classList.add('active');
+    }
+  }
+
+  function findAndActivateLoadedPreset(presetConfig) {
+    // Find in built-in presets
+    for (const key in DEFAULT_PRESETS) {
+        const p = DEFAULT_PRESETS[key];
+        if (p.name === presetConfig.name &&
+            p.prep === presetConfig.prep &&
+            p.work === presetConfig.work &&
+            p.rest === presetConfig.rest &&
+            p.reps === presetConfig.reps &&
+            p.sets === presetConfig.sets &&
+            p.setRest === presetConfig.setRest) {
+            
+            const chip = document.querySelector(`#built-in-presets .preset-chip[data-preset="${key}"]`);
+            activatePresetChip(chip);
+            return; // Found and activated
+        }
+    }
+
+    // Find in custom presets
+    const customPresets = getCustomPresets();
+    const customIndex = customPresets.findIndex(p => 
+        p.name === presetConfig.name &&
+        p.prep === presetConfig.prep &&
+        p.work === presetConfig.work &&
+        p.rest === presetConfig.rest &&
+        p.reps === presetConfig.reps &&
+        p.sets === presetConfig.sets &&
+        p.setRest === presetConfig.setRest
+    );
+
+    if (customIndex !== -1) {
+        const chip = elements.customPresetsList.children[customIndex];
+        activatePresetChip(chip);
+    }
   }
 
   function getCustomPresets() {
@@ -440,9 +493,7 @@
           deleteCustomPreset(idx);
         } else {
           loadPreset(p);
-          document.querySelectorAll('#built-in-presets .preset-chip').forEach(c => c.classList.remove('active'));
-          document.querySelectorAll('#custom-presets-list .custom-chip').forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
+          activatePresetChip(chip);
         }
       });
 
@@ -554,8 +605,7 @@
         const presetKey = btn.getAttribute('data-preset');
         if (DEFAULT_PRESETS[presetKey]) {
           loadPreset(DEFAULT_PRESETS[presetKey]);
-          document.querySelectorAll('#built-in-presets .preset-chip').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
+          activatePresetChip(btn);
         }
       });
     });
@@ -625,6 +675,18 @@
     if (savedTheme) {
       applyTheme(savedTheme);
       elements.themeSelect.value = savedTheme;
+    }
+
+    // Restore Last Used Preset
+    const lastPresetJSON = localStorage.getItem(STORAGE_KEY_LAST_PRESET);
+    if (lastPresetJSON) {
+      try {
+        const lastPreset = JSON.parse(lastPresetJSON);
+        applyPreset(lastPreset);
+        findAndActivateLoadedPreset(lastPreset);
+      } catch (e) {
+        console.error("Failed to parse last preset", e);
+      }
     }
 
     initEvents();
