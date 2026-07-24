@@ -723,25 +723,80 @@ body {
   cursor: pointer;
 }
 
-/* Mobile Breakpoint: Timer at TOP, Settings at BOTTOM */
+/* Mobile Breakpoint: 1. Countdown Timer, 2. Header, 3. Settings */
 @media (max-width: 860px) {
-  .main-layout {
+  .app-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    padding: 12px 14px 24px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .main-layout {
+    display: contents;
   }
 
   .timer-panel {
-    order: 1; /* Counter / Ring at top */
+    order: 1; /* 1. Countdown Timer */
     width: 100%;
+    box-sizing: border-box;
+  }
+
+  .app-header {
+    order: 2; /* 2. Header */
+    width: 100%;
+    margin: 14px 0 12px 0;
+    box-sizing: border-box;
   }
 
   .setup-panel {
-    order: 2; /* Settings at bottom */
+    order: 3; /* 3. Settings */
     width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 16px 14px;
+  }
+
+  .config-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-card {
+    padding: 8px 10px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .stepper-control {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-value-wrapper {
+    min-width: 0;
+  }
+
+  .input-value-wrapper input[type="number"] {
+    width: 28px;
+    font-size: 1rem;
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 380px) {
+  .config-grid {
+    grid-template-columns: 1fr;
   }
 }

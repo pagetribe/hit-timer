@@ -150,7 +150,7 @@
           if (cfg.setRest > 0) {
             seq.push({
               type: 'SET_REST',
-              name: 'SET BREAK',
+              name: 'BREAK BETWEEN SETS',
               duration: cfg.setRest,
               set: s,
               rep: r
@@ -203,7 +203,7 @@
     // 1. Update Center Text (2-digit countdown format)
     elements.phaseBadge.textContent = curr.name;
     elements.timerDigits.textContent = formatSS(intervalTimeRemaining);
-    elements.subtextStatus.textContent = timerState === 'FINISHED' ? 'WORKOUT DONE!' : (curr.type === 'PREP' ? 'GET READY IN' : (curr.type === 'SET_REST' ? 'SET BREAK' : `SET ${curr.set} OF ${cfg.sets}`));
+    elements.subtextStatus.textContent = timerState === 'FINISHED' ? 'WORKOUT DONE!' : (curr.type === 'PREP' ? 'GET READY IN' : (curr.type === 'SET_REST' ? 'BREAK BETWEEN SETS' : `SET ${curr.set} OF ${cfg.sets}`));
 
     // 2. Set Phase Badge Class
     elements.phaseBadge.className = 'phase-badge';
