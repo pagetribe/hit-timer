@@ -19,9 +19,9 @@ A feature-complete High Intensity Interval Training (HIIT) web application built
 ### 3. **Input Card Overflow & Bleed Fix**
 - Applied `min-width: 0; box-sizing: border-box; overflow: hidden;` across `.setup-panel`, `.config-grid`, `.input-card`, `.stepper-control`, and input wrappers so cards never bleed over the right edge on mobile screens.
 
-### 4. **2-Digit Ring Countdown Timer**
-- Active interval countdown inside the ring displays **two digits** (`SS` format, e.g. `30`, `05`, `60`).
-- Setup interval inputs are capped at a maximum of 60 seconds.
+### 4. **Interval Countdown Timer & 2-Minute Cap**
+- Active interval countdown inside the ring displays `SS` format for < 60s and `MM:SS` for intervals over 60s.
+- Setup interval inputs are capped at a maximum of 120 seconds (2 minutes).
 
 ---
 

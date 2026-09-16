@@ -92,9 +92,12 @@
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
-  // Two-digit format for ring countdown timer (max 60 seconds)
+  // Format for ring countdown timer (supports up to 120s / 2 minutes)
   function formatSS(totalSeconds) {
     const secs = Math.max(0, Math.ceil(totalSeconds));
+    if (secs >= 60) {
+      return formatMMSS(secs);
+    }
     return String(secs).padStart(2, '0');
   }
 
@@ -106,12 +109,12 @@
   // --- Workout Sequence Builder ---
   function getConfigValues() {
     return {
-      prep: Math.min(60, parseInt(elements.prepInput.value, 10) || 0),
-      work: Math.min(60, Math.max(1, parseInt(elements.workInput.value, 10) || 1)),
-      rest: Math.min(60, parseInt(elements.restInput.value, 10) || 0),
+      prep: Math.min(120, parseInt(elements.prepInput.value, 10) || 0),
+      work: Math.min(120, Math.max(1, parseInt(elements.workInput.value, 10) || 1)),
+      rest: Math.min(120, parseInt(elements.restInput.value, 10) || 0),
       reps: Math.max(1, parseInt(elements.repsInput.value, 10) || 1),
       sets: Math.max(1, parseInt(elements.setsInput.value, 10) || 1),
-      setRest: Math.min(60, parseInt(elements.setRestInput.value, 10) || 0)
+      setRest: Math.min(120, parseInt(elements.setRestInput.value, 10) || 0)
     };
   }
 
@@ -398,12 +401,12 @@
 
   // --- Presets Manager ---
   function applyPreset(presetConfig) {
-    elements.prepInput.value = Math.min(60, Math.max(0, presetConfig.prep || 0));
-    elements.workInput.value = Math.min(60, Math.max(1, presetConfig.work || 30));
-    elements.restInput.value = Math.min(60, Math.max(0, presetConfig.rest || 0));
+    elements.prepInput.value = Math.min(120, Math.max(0, presetConfig.prep || 0));
+    elements.workInput.value = Math.min(120, Math.max(1, presetConfig.work || 30));
+    elements.restInput.value = Math.min(120, Math.max(0, presetConfig.rest || 0));
     elements.repsInput.value = Math.max(1, presetConfig.reps || 1);
     elements.setsInput.value = Math.max(1, presetConfig.sets || 1);
-    elements.setRestInput.value = Math.min(60, Math.max(0, presetConfig.setRest || 0));
+    elements.setRestInput.value = Math.min(120, Math.max(0, presetConfig.setRest || 0));
   }
 
   function loadPreset(presetConfig) {
